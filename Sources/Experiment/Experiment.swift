@@ -61,7 +61,11 @@ import AnalyticsConnector
         instances[instanceKey] = newInstance
         if config.automaticFetchOnAmplitudeIdentityChange {
             connector.identityStore.addIdentityListener(key: "init") { (identity) in
-                newInstance.fetch(user: ExperimentUser(), completion: nil)
+                newInstance.fetch(user: ExperimentUser()) { _, _ in
+                    NotificationCenter.default.post(
+                        name: NSNotification.Name("com.zerolongevity.Zero.ExperimentClient.FetchCompletedAfterIdentityChange"),
+                        object: nil)
+                }
             }
         }
         return newInstance
